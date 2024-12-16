@@ -87,6 +87,120 @@
             <div class="u-clearfix u-custom-html u-expanded-width u-custom-html-2"></div>
           </div>
         </div>
+        <div style="position: relative; text-align: center; margin-top: 50px;">
+    <div class="congrats-message" id="congratsMessage" style="position: absolute; display: none; font-size: 36px; font-weight: 800; color: #ff9800; text-align: center; top: 50%; transform: translateY(-50%); text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);">
+        🎉 Congratulations! 🎉
+    </div>
+    <canvas id="spinnerCanvas" width="500" height="500" style="box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);"></canvas>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById('spinnerCanvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 200;
+        const totalSections = 8;
+        const sectionAngle = (2 * Math.PI) / totalSections;
+        let currentAngle = 0;
+
+        const wheelSections = [
+            { color: '#FFDF50', label: '👟 👗' },
+            { color: '#FFFFFF', label: '↺' },
+            { color: '#D3D3D3', label: '😢' },
+            { color: '#FFFFFF', label: '↺' },
+            { color: '#FFDF50', label: '👟 👗' },
+            { color: '#FFFFFF', label: '↺' },
+            { color: '#D3D3D3', label: '😢' },
+            { color: '#FFFFFF', label: '↺' }
+        ];
+
+        function drawWheel(angle) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw bold outer circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 10, 0, 2 * Math.PI);
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = '#888';
+            ctx.stroke();
+            ctx.closePath();
+
+            for (let i = 0; i < totalSections; i++) {
+                const startAngle = angle + i * sectionAngle;
+                const endAngle = startAngle + sectionAngle;
+
+                // Draw section
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = wheelSections[i].color;
+                ctx.fill();
+
+                // Draw labels
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sectionAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 40px Arial';
+                ctx.fillStyle = '#000';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                ctx.fillText(wheelSections[i].label, radius * 0.7, 0);
+                ctx.restore();
+            }
+
+            // Draw center circle with pointer
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+            ctx.fillStyle = '#FF9800';
+            ctx.fill();
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - 30);
+            ctx.lineTo(centerX - 10, centerY - 50);
+            ctx.lineTo(centerX + 10, centerY - 50);
+            ctx.closePath();
+            ctx.fillStyle = '#FFF';
+            ctx.fill();
+        }
+
+        function spinWheel() {
+            let spinSpeed = 30;
+            const targetAngle = 0; // Always stops at yellow
+            const spinInterval = setInterval(() => {
+                currentAngle += spinSpeed * Math.PI / 180;
+                spinSpeed *= 0.95;
+                drawWheel(currentAngle);
+                if (spinSpeed < 0.1) {
+                    clearInterval(spinInterval);
+                    showResult();
+                }
+            }, 16);
+        }
+
+        function showResult() {
+            const congratsMessage = document.getElementById('congratsMessage');
+            congratsMessage.style.display = 'block';
+            congratsMessage.innerText = '🎉 Congratulations! 🎉';
+            setTimeout(() => {
+                window.location.href = 'https://www.example.com'; // Replace with your URL
+            }, 8000);
+        }
+
+        drawWheel(currentAngle);
+        canvas.addEventListener('click', spinWheel);
+    });
+</script>
+
       </div>
     </section>
     <section class="u-clearfix u-section-2" id="sec-6bb7">
